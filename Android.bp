@@ -53,6 +53,27 @@ libcrypto_sources_no_clang = [
     "linux-arm/crypto/fipsmodule/bsaes-armv7.S",
 ]
 
+bootstrap_go_package {
+    name: "soong-libcrypto",
+    pkgPath: "android/soong/libcrypto",
+    deps: [
+        "blueprint",
+        "blueprint-pathtools",
+        "soong",
+        "soong-android",
+        "soong-cc",
+        "soong-genrule",
+    ],
+    srcs: [
+          "Android.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+cc_libcrypto {
+    name: "cc_libcrypto_defaults"
+}
+
 cc_defaults {
     name: "libcrypto_defaults",
     host_supported: true,
@@ -94,7 +115,7 @@ cc_library {
     },
     double_loadable: true,
     recovery_available: true,
-    defaults: ["libcrypto_sources", "libcrypto_defaults", "boringssl_defaults", "boringssl_flags"],
+    defaults: ["libcrypto_sources", "libcrypto_defaults", "cc_libcrypto_defaults", "boringssl_defaults", "boringssl_flags"],
     unique_host_soname: true,
 }
 
@@ -127,7 +148,7 @@ cc_library_static {
 // modules should use the static variant of libcrypto.
 cc_library_static {
     name: "libcrypto_static",
-    defaults: ["libcrypto_sources", "libcrypto_defaults", "boringssl_defaults", "boringssl_flags"],
+    defaults: ["libcrypto_sources", "libcrypto_defaults","cc_libcrypto_defaults", "boringssl_defaults", "boringssl_flags"],
 
     target: {
         host: {

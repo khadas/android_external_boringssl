@@ -88,7 +88,11 @@ OPENSSL_EXPORT void CTR_DRBG_clear(CTR_DRBG_STATE *drbg);
 
 #if defined(OPENSSL_X86_64) && !defined(OPENSSL_NO_ASM)
 OPENSSL_INLINE int have_rdrand(void) {
+#if defined(NO_USE_RDRAND)
+  return 0;
+#else
   return (OPENSSL_ia32cap_get()[1] & (1u << 30)) != 0;
+#endif
 }
 
 // CRYPTO_rdrand writes eight bytes of random data from the hardware RNG to
